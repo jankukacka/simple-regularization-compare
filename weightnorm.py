@@ -4,14 +4,14 @@ import tensorflow as tf
 
 # adapted from keras.optimizers.SGD
 class SGDWithWeightnorm(SGD):
-    def get_updates(self, params, constraints, loss):
+    def get_updates(self, params, loss):
         grads = self.get_gradients(loss, params)
         self.updates = []
 
         lr = self.lr
         if self.initial_decay > 0:
-            lr *= (1. / (1. + self.decay * self.iterations))
-            self.updates .append(K.update_add(self.iterations, 1))
+            lr *= (1. / (1. + self.decay * K.cast(self.iterations, self.decay.dtype)))
+            self.updates.append(K.update_add(self.iterations, 1))
 
         # momentum
         shapes = [K.get_variable_shape(p) for p in params]
@@ -46,11 +46,6 @@ class SGDWithWeightnorm(SGD):
                 else:
                     new_V_param = V + v_v
 
-                # if there are constraints we apply them to V, not W
-                if p in constraints:
-                    c = constraints[p]
-                    new_V_param = c(new_V_param)
-
                 # wn param updates --> W updates
                 add_weightnorm_param_updates(self.updates, new_V_param, new_g_param, p, V_scaler)
 
@@ -62,11 +57,6 @@ class SGDWithWeightnorm(SGD):
                     new_p = p + self.momentum * v - lr * g
                 else:
                     new_p = p + v
-
-                # apply constraints
-                if p in constraints:
-                    c = constraints[p]
-                    new_p = c(new_p)
 
                 self.updates.append(K.update(p, new_p))
         return self.updates
