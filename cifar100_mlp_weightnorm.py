@@ -55,7 +55,7 @@ from weightnorm import SGDWithWeightnorm
 print("lr", type(0.01))
 sgd_wn = SGDWithWeightnorm(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
 model.compile(loss='categorical_crossentropy',
-              optimizer=RMSprop(),#sgd_wn,
+              optimizer=sgd_wn,
               metrics=['accuracy', 'top_k_categorical_accuracy'])
 
 from weightnorm import data_based_init

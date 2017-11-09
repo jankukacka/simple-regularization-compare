@@ -1,16 +1,13 @@
 from keras import backend as K
 from keras import activations
 from keras import initializers
-from keras import regularizers
-from keras import constraints
 from keras.engine.topology import Layer
 from keras.engine import InputSpec
-from keras.legacy import interfaces
 import numpy as np
 import tensorflow as tf
 
 class FastDropoutDenseLayer(Layer):
-"""
+    """
     Implements Fast Gaussian approximation of dropout according to "Wang et al.
     2013: Fast dropout training." Works either with ReLU activation or as a linear unit.
 
@@ -106,8 +103,6 @@ class FastDropoutDenseLayer(Layer):
         if self.has_var_output:
             return (input_shape[0], 2*self.units)
         return (input_shape[0], self.units)
-
-
 
 def FastDropoutCrossEntropyLoss(target, output, sample_count=10):
     """
