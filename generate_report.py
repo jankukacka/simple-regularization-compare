@@ -44,7 +44,7 @@ def get_best_test(histories, series_name):
 
 def plot_series(res, axes=None, model_index=0, dataset_size=500,
                 series_name='loss', timed=False, show_best_test=False,
-                line_params={}, dev_params={}, save_png=False, save_eps=False):
+                line_params={}, dev_params={}):
     histories = res[model_index]['results'][dataset_size]
     repetitions = len(histories)
     epochs = len(histories[0][series_name])
@@ -74,12 +74,6 @@ def plot_series(res, axes=None, model_index=0, dataset_size=500,
         axes.errorbar(best_ep_mean*timing, best_test_mean,
                       xerr=best_ep_std*timing, yerr=best_test_std,
                       marker='x', markersize=10, c=line_params['color'])
-    if save_png:
-        plt.savefig('report/plot_'+res[model_index]['name']+'_{}.png'.format(dataset_size),
-                    bbox_inches='tight')
-    if save_eps:
-        plt.savefig('report/plot_'+res[model_index]['name']+'_{}.eps'.format(dataset_size),
-                    bbox_inches='tight')
 
 def plot_comparison(res, dataset_size, title, series_name, xlabel='epochs',
                     timed=False, save_png=True, save_eps=True):
@@ -94,18 +88,23 @@ def plot_comparison(res, dataset_size, title, series_name, xlabel='epochs',
         dev_params = {'linewidth': 0, 'alpha': 0.3, 'facecolor': color}
         plot_series(res, model_index=i, series_name=series_name,
                     dev_params=dev_params, line_params=line_params,
-                    dataset_size=dataset_size, timed=timed, show_best_test=True,
-                    save_png=save_png, save_eps=save_eps)
+                    dataset_size=dataset_size, timed=timed, show_best_test=True)
 
         line_params = {'label': res[i]['name'] + ' (validation)', 'color': color, 'linestyle':'--'}
         plot_series(res, model_index=i, series_name='val_'+series_name,
                     dev_params=dev_params, line_params=line_params,
-                    dataset_size=dataset_size, timed=timed,
-                    save_png=save_png, save_eps=save_eps)
+                    dataset_size=dataset_size, timed=timed)
+    if save_png:
+        plt.savefig('report/plot_'+series_name+'_{}.png'.format(dataset_size),
+                    bbox_inches='tight')
+    if save_eps:
+        plt.savefig('report/plot_'+series_name+'_{}.eps'.format(dataset_size),
+                    bbox_inches='tight')
     plt.close()
 
 
-def generate_report(results_filename='report/results.pkl'):
+def generate_report(results_filename='report/results.pkl', generate_png=True,
+                    generate_eps=True):
     res = load_results(results_filename)
     # Folder for saving images
     if not os.path.isdir('report'):
@@ -113,19 +112,27 @@ def generate_report(results_filename='report/results.pkl'):
 
     # normal charts
     for key in sorted(res[0]['results']):
-        plot_comparison(res, key, 'Loss, {} samples'.format(key), 'loss')
-        plot_comparison(res, key, 'Accuracy, {} samples'.format(key), 'acc')
+        plot_comparison(res, key, 'Loss, {} samples'.format(key), 'loss',
+                        save_png=generate_png, save_eps=generate_eps)
+        plot_comparison(res, key, 'Accuracy, {} samples'.format(key), 'acc',
+                        save_png=generate_png, save_eps=generate_eps)
         plot_comparison(res, key, 'Top-5, {} samples'.format(key),
-                        'top_k_categorical_accuracy')
+                        'top_k_categorical_accuracy',save_png=generate_png,
+                        save_eps=generate_eps)
 
     # timed charts
     for key in sorted(res[0]['results']):
         plot_comparison(res, key, 'Loss, {} samples'.format(key), 'loss',
-                        timed=True, xlabel='time (s)')
+                        timed=True, xlabel='time (s)', save_png=generate_png,
+                        save_eps=generate_eps)
         plot_comparison(res, key, 'Accuracy, {} samples'.format(key), 'acc',
-                        timed=True, xlabel='time (s)')
+                        timed=True, xlabel='time (s)', save_png=generate_png,
+                        save_eps=generate_eps)
         plot_comparison(res, key, 'Top-5, {} samples'.format(key),
-                        'top_k_categorical_accuracy', timed=True, xlabel='time (s)')
+                        'top_k_categorical_accuracy', timed=True,
+                        xlabel='time (s)',
+                        save_png=generate_png,
+                        save_eps=generate_eps)
 
 if __name__ == '__main__':
     generate_report()
