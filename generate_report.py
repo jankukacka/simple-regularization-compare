@@ -95,10 +95,12 @@ def plot_comparison(res, dataset_size, title, series_name, xlabel='epochs',
                     dev_params=dev_params, line_params=line_params,
                     dataset_size=dataset_size, timed=timed)
     if save_png:
-        plt.savefig('report/plot_'+series_name+'_{}.png'.format(dataset_size),
+        t = 'time' if timed else 'ep'
+        plt.savefig('report/plot_'+t+'_'+series_name+'_{}.png'.format(dataset_size),
                     bbox_inches='tight')
     if save_eps:
-        plt.savefig('report/plot_'+series_name+'_{}.eps'.format(dataset_size),
+        t = 'time' if timed else 'ep'
+        plt.savefig('report/plot_'+t+'_'+series_name+'_{}.svg'.format(dataset_size),
                     bbox_inches='tight')
     plt.close()
 
