@@ -1,3 +1,12 @@
+# ------------------------------------------------------------------------------
+#  Comparison of regularization techniqes.
+#  Jan Kukacka, 11/2017
+#  jan.kukacka@tum.de
+# ------------------------------------------------------------------------------
+#  Implementation of Fast dropout dense layer and Fast dropout softmax crosss
+#  entropy loss function (which does not work, yet).
+# ------------------------------------------------------------------------------
+
 from keras import backend as K
 from keras import activations
 from keras import initializers
@@ -26,7 +35,8 @@ class FastDropoutDenseLayer(Layer):
             dropout=1 means no dropout.
         has_var_input: bool. True (default) if previous layer outputs also variance.
         has_var_output: bool. True (default) if this layer should also output
-            the variance.
+            the variance. Note that the computation of the output variance is not
+            correctly implemented yet.
     # Input shape
         2D tensor with shape: `(batch_size, input_dim)` or
             `(batch_size, 2* input_dim)` if has_var_input=True
@@ -89,6 +99,7 @@ class FastDropoutDenseLayer(Layer):
             r = mu/s
             dist = tf.distributions.Normal(0.0,1.0)
             mu_out = dist.cdf(r)*mu + s*dist.prob(r)
+            # TODO: s should also be adjusted after ReLU
             s_out = s
         else:
             mu_out, s_out = mu, s
