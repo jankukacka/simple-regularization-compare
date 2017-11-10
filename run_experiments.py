@@ -27,6 +27,7 @@ import keras
 from keras.datasets import cifar100
 import time as t
 import cPickle
+import os
 # --
 from models import get_available_models, get_model
 # --
@@ -172,6 +173,8 @@ def run_experiments():
     # Now each experiment contains dict of results indexed by dataset_sizes,
     # and each of these contains a list of length repetition with results of
     # each run.
+    if not os.path.isdir('report'):
+        os.mkdir('report')
     with open('report/results.pkl', 'wb') as f:
         cPickle.dump(experiments, f)
 
