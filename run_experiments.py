@@ -58,7 +58,7 @@ def prepare_data(samples_per_class=500):
     train_sorted = np.argsort(y_train, axis=0)
     x_train = x_train[train_sorted]
     y_train = y_train[train_sorted]
-    
+
     test_sorted = np.argsort(y_test, axis = 0)
     x_test = x_test[test_sorted]
     y_test = y_test[test_sorted]
@@ -172,7 +172,7 @@ def run_experiments():
     # Now each experiment contains dict of results indexed by dataset_sizes,
     # and each of these contains a list of length repetition with results of
     # each run.
-    with open('results.pkl', 'wb') as f:
+    with open('report/results.pkl', 'wb') as f:
         cPickle.dump(experiments, f)
 
 
