@@ -105,8 +105,11 @@ def plot_comparison(res, dataset_size, title, series_name, xlabel='epochs',
     plt.close()
 
 
-def main(results_filename='report/results.pkl'):
+def generate_report(results_filename='report/results.pkl'):
     res = load_results(results_filename)
+    # Folder for saving images
+    if not os.path.isdir('report'):
+        os.mkdir('report')
 
     # normal charts
     for key in sorted(res[0]['results']):
@@ -125,7 +128,7 @@ def main(results_filename='report/results.pkl'):
                         'top_k_categorical_accuracy', timed=True, xlabel='time (s)')
 
 if __name__ == '__main__':
-    main()
+    generate_report()
 
 
 #----------------------------------------------------------------
