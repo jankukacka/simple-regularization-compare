@@ -82,7 +82,7 @@ class FastDropoutDenseLayer(Layer):
 
         # compute dropout mean and variance
         mu = K.bias_add(self.dropout* K.dot(mu_in,self.kernel), self.bias)
-        s = K.dot(self.dropout * (1-self.dropout) * K.square(mu_in) + self.dropout * K.square(s_in), K.square(self.kernel))
+        s = K.dot(self.dropout * (1-self.dropout) * K.square(mu_in) + self.dropout * s_in, K.square(self.kernel))
 
         # adjust output mean and variance by activation function
         if self.activation == 'ReLU':
